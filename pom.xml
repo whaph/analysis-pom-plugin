@@ -16,7 +16,7 @@
 
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-    <java.version>1.8</java.version>
+    <java.version>1.6</java.version>
 
     <!-- Dependencies versions -->
     <analysis-config.version>1.0.34</analysis-config.version>
