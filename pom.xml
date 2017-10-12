@@ -14,30 +14,6 @@
   <name>Static Analysis Plug-ins Parent POM</name>
   <version>2.0-SNAPSHOT</version>
 
-  <properties>
-    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-
-    <!-- Override properties defined in parent POM -->
-    <jenkins.version>2.60.1</jenkins.version>
-    <java.level>8</java.level>
-
-    <!-- Dependencies versions -->
-    <analysis-config.version>1.0.34</analysis-config.version>
-    <mockito.version>1.10.8</mockito.version>
-    <dashboard-view.version>2.9.4</dashboard-view.version>
-    <token-macro.version>2.1</token-macro.version>
-    <jenkins-maven-plugin.version>2.17</jenkins-maven-plugin.version>
-    <matrix-project.version>1.7.1</matrix-project.version>
-
-    <!-- Maven plug-in versions -->
-    <maven-cobertura-plugin.version>2.6</maven-cobertura-plugin.version>
-    <maven-checkstyle-plugin.version>2.10</maven-checkstyle-plugin.version>
-    <maven-pmd-plugin.version>3.0.1</maven-pmd-plugin.version>
-
-    <!-- Enabled while there are fatal Findbugs issues -->
-    <findbugs.failOnError>false</findbugs.failOnError>
-  </properties>
-
   <licenses>
     <license>
       <name>MIT license</name>
@@ -48,6 +24,37 @@
       <comments>All YUI source code is under the BSD license.</comments>
     </license>
   </licenses>
+
+  <properties>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+
+    <!-- Override properties defined in parent POM -->
+    <jenkins.version>2.60.1</jenkins.version>
+    <java.level>8</java.level>
+
+    <!-- Library Dependencies Versions -->
+    <analysis-config.version>2.0-SNAPSHOT</analysis-config.version>
+
+    <!-- Test Library Dependencies Versions -->
+    <mockito.version>1.10.8</mockito.version>
+
+    <!-- Jenkins Plug-in Dependencies Versions -->
+    <dashboard-view.version>2.9.4</dashboard-view.version>
+    <token-macro.version>2.1</token-macro.version>
+    <jenkins-maven-plugin.version>2.17</jenkins-maven-plugin.version>
+    <matrix-project.version>1.7.1</matrix-project.version>
+
+    <!-- Maven plug-in versions -->
+    <pmd.maven.plugin>3.8</pmd.maven.plugin>
+    <pmd.version>5.8.1</pmd.version>
+    <checkstyle.maven.plugin>2.17</checkstyle.maven.plugin>
+    <checkstyle.version>8.2</checkstyle.version>
+    <findbugs.maven.plugin>3.0.5</findbugs.maven.plugin>
+    <jacoco.maven.plugin>0.7.9</jacoco.maven.plugin>
+
+    <!-- Enabled while there are fatal Findbugs issues -->
+    <findbugs.failOnError>false</findbugs.failOnError>
+  </properties>
 
   <url>http://wiki.jenkins-ci.org/x/CwDgAQ</url>
 
@@ -60,7 +67,7 @@
 
   <ciManagement>
     <system>Jenkins</system>
-    <url>https://jenkins.ci.cloudbees.com/job/plugins/job/${project.artifactId}-plugin</url>
+    <url>https://ci.jenkins.io/job/Plugins/job/${project.artifactId}-plugin</url>
   </ciManagement>
 
   <developers>
@@ -152,55 +159,81 @@
           </configuration>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>${maven-cobertura-plugin.version}</version>
-          <configuration>
-            <format>xml</format>
-          </configuration>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.maven.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>report</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${maven-checkstyle-plugin.version}</version>
+          <version>${checkstyle.maven.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.jvnet.hudson.plugins</groupId>
               <artifactId>analysis-config</artifactId>
               <version>${analysis-config.version}</version>
             </dependency>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${checkstyle.version}</version>
+            </dependency>
           </dependencies>
           <configuration>
             <configLocation>checkstyle-configuration.xml</configLocation>
-            <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-            <propertyExpansion>config_loc=${project.build.directory}/</propertyExpansion>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-pmd-plugin</artifactId>
-          <version>${maven-pmd-plugin.version}</version>
+          <version>${pmd.maven.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.jvnet.hudson.plugins</groupId>
               <artifactId>analysis-config</artifactId>
               <version>${analysis-config.version}</version>
             </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
           </dependencies>
           <configuration>
             <rulesets>
               <ruleset>pmd-configuration.xml</ruleset>
             </rulesets>
-            <targetJdk>${java.level}</targetJdk>
             <excludeRoots>
               <excludeRoot>target/generated-sources/localizer</excludeRoot>
             </excludeRoots>
+            <includeTests>true</includeTests>
+            <minimumTokens>50</minimumTokens>
           </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
+          <version>${findbugs.maven.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.jvnet.hudson.plugins</groupId>
@@ -216,6 +249,7 @@
             <relaxed>false</relaxed>
             <fork>false</fork>
             <excludeFilterFile>findbugs-exclusion-filter.xml</excludeFilterFile>
+            <includeTests>true</includeTests>
           </configuration>
         </plugin>
         <plugin>
