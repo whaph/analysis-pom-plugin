@@ -36,7 +36,9 @@
     <analysis-config.version>2.0-SNAPSHOT</analysis-config.version>
 
     <!-- Test Library Dependencies Versions -->
-    <mockito.version>1.10.8</mockito.version>
+    <junit.version>5.0.0</junit.version>
+    <mockito.version>2.9.0</mockito.version>
+    <assertj.version>3.8.0</assertj.version>
 
     <!-- Jenkins Plug-in Dependencies Versions -->
     <dashboard-view.version>2.9.4</dashboard-view.version>
@@ -79,6 +81,7 @@
   </developers>
 
   <dependencies>
+    <!-- Jenkins Dependencies -->
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>matrix-project</artifactId>
@@ -101,10 +104,24 @@
       <version>${token-macro.version}</version>
       <optional>true</optional>
     </dependency>
+
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
+      <artifactId>mockito-core</artifactId>
       <version>${mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
