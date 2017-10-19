@@ -159,6 +159,7 @@
                 <exclude>org.jenkins-ci.modules:instance-identity</exclude>
                 <exclude>org.jenkins-ci.modules:ssh-cli-auth</exclude>
                 <exclude>commons-io:commons-io</exclude>
+                <exclude>com.google.code.findbugs:annotations</exclude>
               </excludes>
             </requireUpperBoundDeps>
           </rules>
